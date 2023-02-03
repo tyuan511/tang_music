@@ -6,10 +6,10 @@ class RecommandPlaylist extends StatefulWidget {
   const RecommandPlaylist({Key? key}) : super(key: key);
 
   @override
-  RecommandPlaylistState createState() => RecommandPlaylistState();
+  State<RecommandPlaylist> createState() => _RecommandPlaylistState();
 }
 
-class RecommandPlaylistState extends State<RecommandPlaylist> with AutomaticKeepAliveClientMixin {
+class _RecommandPlaylistState extends State<RecommandPlaylist> with AutomaticKeepAliveClientMixin {
   late Future<List<PlaylistItemModel>> _futureRecommandList;
   final _playlistModel = PlaylistModel();
 
@@ -29,7 +29,7 @@ class RecommandPlaylistState extends State<RecommandPlaylist> with AutomaticKeep
     var crossAxisCount = 3;
     double spacing = 32;
     var colWidth = (MediaQuery.of(context).size.width - 400 - spacing * (crossAxisCount + 1)) / crossAxisCount;
-    var mainAxisExtent = colWidth + 60;
+    var mainAxisExtent = colWidth + 64;
 
     return FutureBuilder<List<PlaylistItemModel>>(
       future: _futureRecommandList,

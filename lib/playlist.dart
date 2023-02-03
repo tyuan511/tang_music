@@ -7,10 +7,10 @@ class Playlist extends StatefulWidget {
   const Playlist({Key? key}) : super(key: key);
 
   @override
-  PlaylistState createState() => PlaylistState();
+  State<Playlist> createState() => _PlaylistState();
 }
 
-class PlaylistState extends State<Playlist> with SingleTickerProviderStateMixin {
+class _PlaylistState extends State<Playlist> with SingleTickerProviderStateMixin {
   late TabController _controller;
 
   @override

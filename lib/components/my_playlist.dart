@@ -4,10 +4,10 @@ class MyPlaylist extends StatefulWidget {
   const MyPlaylist({Key? key}) : super(key: key);
 
   @override
-  MyPlaylistState createState() => MyPlaylistState();
+  State<MyPlaylist> createState() => _MyPlaylistState();
 }
 
-class MyPlaylistState extends State<MyPlaylist> {
+class _MyPlaylistState extends State<MyPlaylist> {
   @override
   Widget build(BuildContext context) {
     return Container();

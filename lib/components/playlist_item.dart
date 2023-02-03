@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:tang_music/model/playlist.dart';
 
@@ -10,23 +8,28 @@ class PlaylistItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        ClipRRect(
-          borderRadius: BorderRadius.circular(16),
-          child: Image.network(
-            model.picUrl,
+    return GestureDetector(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(16),
+            child: Image.network(
+              model.picUrl,
+            ),
           ),
-        ),
-        const Padding(padding: EdgeInsets.only(top: 8)),
-        Text(
-          model.name,
-          maxLines: 2,
-          overflow: TextOverflow.ellipsis,
-          style: const TextStyle(fontSize: 16, color: Colors.black),
-        )
-      ],
+          const Padding(padding: EdgeInsets.only(top: 8)),
+          Text(
+            model.name,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(fontSize: 18, color: Colors.black),
+          )
+        ],
+      ),
+      onTap: () {
+        PlaylistModel().getListSongs(model.id);
+      },
     );
   }
 }

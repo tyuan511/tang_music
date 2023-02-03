@@ -4,10 +4,10 @@ class Player extends StatefulWidget {
   const Player({Key? key}) : super(key: key);
 
   @override
-  PlayerState createState() => PlayerState();
+  State<Player> createState() => _PlayerState();
 }
 
-class PlayerState extends State<Player> {
+class _PlayerState extends State<Player> {
   @override
   Widget build(BuildContext context) {
     return Column(
