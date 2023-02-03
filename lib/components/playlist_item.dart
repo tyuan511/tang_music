@@ -1,22 +1,30 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:tang_music/model/playlist.dart';
 
 class PlaylistItem extends StatelessWidget {
-  const PlaylistItem({Key? key}) : super(key: key);
+  final PlaylistItemModel model;
+
+  const PlaylistItem({Key? key, required this.model}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         ClipRRect(
           borderRadius: BorderRadius.circular(16),
-          child: Image.network("https://p1.music.126.net/X3lwU-K8ahwkswzKmm_xMA==/3435973846756513.jpg"),
+          child: Image.network(
+            model.picUrl,
+          ),
         ),
         const Padding(padding: EdgeInsets.only(top: 8)),
-        const Text(
-          "一曲戏腔极尽风流，一抹笑靥极尽欢颜。",
+        Text(
+          model.name,
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
-          style: TextStyle(fontSize: 16, color: Colors.black),
+          style: const TextStyle(fontSize: 16, color: Colors.black),
         )
       ],
     );
