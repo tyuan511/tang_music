@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:tang_music/consts.dart' as consts;
 import 'package:audioplayers/audioplayers.dart';
+import 'package:tang_music/model/song.dart';
 
 final player = AudioPlayer();
 
@@ -20,22 +21,21 @@ class PlaylistModel {
   }
 
   Future<dynamic> getListSongs(int id) async {
-    final response = await http.get(Uri.parse('${consts.apiBaseUrl}/playlist/detail?id=$id'));
+    final response = await http.get(Uri.parse('${consts.apiBaseUrl}/playlist/track/all?id=$id'));
     if (response.statusCode == 200) {
-      var data = jsonDecode(response.body);
-      var trackIds = (data['playlist']['trackIds'] as List).map<int>((item) => item['id']).toList();
+      final data = jsonDecode(response.body);
+      final ids = data['songs'].map((e) => e['id']).toList().join(',');
+      final res = await http.get(Uri.parse('${consts.apiBaseUrl}/song/url/v1?id=$ids&level=standard'));
+      var data2 = jsonDecode(res.body);
+      var tracks = data2['data'].map((e) => e['url']).toList();
+      List<SongModel> songs = [];
 
-      if (trackIds.isNotEmpty) {
-        final res2 = await http.get(Uri.parse('${consts.apiBaseUrl}/song/url/v1?id=${trackIds[0]}&level=standard'));
+      (data['songs'] as List).asMap().entries.forEach((entry) {
+        entry.value['trackURL'] = tracks[entry.key];
+        songs.insert(entry.key, SongModel.fromJson(entry.value));
+      });
 
-        if (res2.statusCode == 200) {
-          var data2 = jsonDecode(res2.body);
-          String url = data2['data'][0]['url'];
-          print(url);
-          // await player.stop();
-          await player.play(UrlSource(url));
-        }
-      }
+      print(songs);
     }
   }
 }
