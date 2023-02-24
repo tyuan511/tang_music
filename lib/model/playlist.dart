@@ -20,22 +20,30 @@ class PlaylistModel {
     }
   }
 
-  Future<dynamic> getListSongs(int id) async {
+  Future<List<SongModel>> getListSongs(int id) async {
+    print(id);
     final response = await http.get(Uri.parse('${consts.apiBaseUrl}/playlist/track/all?id=$id'));
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
+      print(data);
       final ids = data['songs'].map((e) => e['id']).toList().join(',');
       final res = await http.get(Uri.parse('${consts.apiBaseUrl}/song/url/v1?id=$ids&level=standard'));
       var data2 = jsonDecode(res.body);
-      var tracks = data2['data'].map((e) => e['url']).toList();
+      print(data2);
       List<SongModel> songs = [];
 
       (data['songs'] as List).asMap().entries.forEach((entry) {
-        entry.value['trackURL'] = tracks[entry.key];
-        songs.insert(entry.key, SongModel.fromJson(entry.value));
+        var item =
+            (data2['data'] as List).firstWhere((element) => element['id'] == entry.value['id'], orElse: () => null);
+        if (item != null) {
+          entry.value['trackURL'] = item['url'];
+          songs.insert(entry.key, SongModel.fromJson(entry.value));
+        }
       });
 
-      print(songs);
+      return songs;
+    } else {
+      return [];
     }
   }
 }

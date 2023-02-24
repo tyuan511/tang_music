@@ -34,7 +34,7 @@ class _PlaylistState extends State<Playlist> with SingleTickerProviderStateMixin
             SizedBox(
               width: 300,
               child: TabBar(
-                padding: const EdgeInsets.only(top: 16, bottom: 16),
+                padding: const EdgeInsets.only(top: 32, bottom: 16),
                 labelColor: Colors.black,
                 labelStyle: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
                 unselectedLabelColor: Colors.black54,
@@ -61,7 +61,7 @@ class _PlaylistState extends State<Playlist> with SingleTickerProviderStateMixin
               ),
             ),
             SizedBox(
-              height: MediaQuery.of(context).size.height - 81,
+              height: MediaQuery.of(context).size.height - 100,
               child: TabBarView(
                 controller: _controller,
                 children: const [MyPlaylist(), RecommandPlaylist(), Settings()],
