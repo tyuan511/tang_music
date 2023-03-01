@@ -41,18 +41,14 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Row(
-          children: const [
-            SizedBox(
-              width: 400,
-              child: Player(),
-            ),
-            Expanded(child: Playlist())
-          ],
+    return Row(
+      children: const [
+        SizedBox(
+          width: 400,
+          child: Player(),
         ),
-      ),
+        Expanded(child: Playlist())
+      ],
     );
   }
 }

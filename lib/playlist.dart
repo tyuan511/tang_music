@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:tang_music/components/my_playlist.dart';
 import 'package:tang_music/components/recommand_playlist.dart';
 import 'package:tang_music/components/settings.dart';
@@ -11,65 +12,73 @@ class Playlist extends StatefulWidget {
 }
 
 class _PlaylistState extends State<Playlist> with SingleTickerProviderStateMixin {
-  late TabController _controller;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = TabController(length: 3, vsync: this);
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Column(
-          children: [
-            SizedBox(
-              width: 300,
-              child: TabBar(
-                padding: const EdgeInsets.only(top: 32, bottom: 16),
+    return DefaultTabController(
+        length: 3,
+        child: Scaffold(
+          appBar: AppBar(
+            systemOverlayStyle: SystemUiOverlayStyle.dark,
+            title: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: const TabBar(
+                padding: EdgeInsets.only(top: 32, bottom: 16),
                 labelColor: Colors.black,
-                labelStyle: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+                labelStyle: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
                 unselectedLabelColor: Colors.black54,
                 indicatorSize: TabBarIndicatorSize.label,
                 indicatorWeight: 3,
-                controller: _controller,
-                tabs: const [
-                  Tab(
-                    child: Text(
-                      "我的",
-                    ),
-                  ),
-                  Tab(
-                    child: Text(
-                      "推荐",
-                    ),
-                  ),
-                  Tab(
-                    child: Text(
-                      "设置",
-                    ),
-                  ),
+                indicatorColor: Colors.blue,
+                tabs: [
+                  Tab(text: '我的'),
+                  Tab(text: '推荐'),
+                  Tab(text: '设置'),
                 ],
               ),
             ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height - 100,
-              child: TabBarView(
-                controller: _controller,
-                children: const [MyPlaylist(), RecommandPlaylist(), Settings()],
-              ),
-            )
-          ],
-        ),
-      ],
-    );
+            elevation: 0,
+            backgroundColor: Colors.white,
+          ),
+          body: const TabBarView(children: [MyPlaylist(), RecommandPlaylist(), Settings()]),
+          backgroundColor: Colors.white,
+        ));
+
+    // Column(
+    //   children: [
+    //     Column(
+    //       children: [
+    //         SizedBox(
+    //           width: 300,
+    //           child: TabBar(
+    //             padding: const EdgeInsets.only(top: 32, bottom: 16),
+    //             labelColor: Colors.black,
+    //             labelStyle: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+    //             unselectedLabelColor: Colors.black54,
+    //             indicatorSize: TabBarIndicatorSize.label,
+    //             indicatorWeight: 3,
+    //             controller: _controller,
+    //             tabs: const [
+    //               Tab(
+    //                 child: Text(
+    //                   "我的",
+    //                 ),
+    //               ),
+    //               Tab(
+    //                 child: Text(
+    //                   "推荐",
+    //                 ),
+    //               ),
+    //               Tab(
+    //                 child: Text(
+    //                   "设置",
+    //                 ),
+    //               ),
+    //             ],
+    //           ),
+    //         ),
+
+    //     ),
+    //   ],
+    // );
   }
 }
