@@ -39,6 +39,8 @@ class PlayerStore extends ChangeNotifier {
     if (idx <= songs.length - 1 && songs[index].trackURL != null) {
       player.stop();
       player.play(UrlSource(songs[index].trackURL!));
+      position = Duration.zero;
+      max = Duration.zero;
     }
   }
 
@@ -55,7 +57,8 @@ class PlayerStore extends ChangeNotifier {
         ? SongModel(
             id: 0,
             name: '暂无歌曲',
-            picUrl: "https://p2.music.126.net/pa1t9G_Mt2xJm_xqUUjvIw==/109951163676905233.jpg",
+            picUrl:
+                "https://p2.music.126.net/pa1t9G_Mt2xJm_xqUUjvIw==/109951163676905233.jpg",
             author: "YUANTANG",
             trackURL: "")
         : songs[index];
@@ -64,9 +67,13 @@ class PlayerStore extends ChangeNotifier {
   toggleState() async {
     if (state == PlayerState.playing) {
       await player.pause();
+      state = PlayerState.paused;
     } else if (state == PlayerState.paused) {
       await player.resume();
+      state = PlayerState.playing;
     }
+
+    notifyListeners();
   }
 
   renew(List<SongModel> list) {

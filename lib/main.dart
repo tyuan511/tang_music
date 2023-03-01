@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 import 'package:tang_music/music_player.dart';
 import "package:tang_music/playlist.dart";
 import 'package:tang_music/store/player_store.dart';
+import 'package:flutter/services.dart';
+import 'dart:io';
 
 void main() {
   runApp(
@@ -11,6 +13,11 @@ void main() {
       child: const MyApp(),
     ),
   );
+
+  if (Platform.isAndroid) {
+    SystemChrome.setSystemUIOverlayStyle(
+        const SystemUiOverlayStyle(statusBarColor: Colors.transparent));
+  }
 }
 
 class MyApp extends StatelessWidget {
@@ -20,11 +27,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'TangMusic',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyHomePage(title: 'TangMusic'),
     );
   }
 }
@@ -41,10 +48,10 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: const [
+    return const Row(
+      children: [
         SizedBox(
-          width: 400,
+          width: 480,
           child: Player(),
         ),
         Expanded(child: Playlist())
