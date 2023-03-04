@@ -25,8 +25,8 @@ class PlayerController extends StatelessWidget {
 
   Widget buildPlayerButton(BuildContext context) {
     return Ink(
-      width: 80,
-      height: 80,
+      width: 72,
+      height: 72,
       decoration: BoxDecoration(color: Theme.of(context).scaffoldBackgroundColor, shape: BoxShape.circle, boxShadow: [
         BoxShadow(
             offset: const Offset(0, 4),
@@ -35,7 +35,7 @@ class PlayerController extends StatelessWidget {
       ]),
       child: InkWell(
         onTap: () {},
-        borderRadius: BorderRadius.circular(40),
+        borderRadius: BorderRadius.circular(36),
         child: Icon(
           Icons.play_arrow_rounded,
           color: Theme.of(context).textTheme.bodyLarge?.color,

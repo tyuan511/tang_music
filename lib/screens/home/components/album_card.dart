@@ -1,20 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:tang_music/model/album_item.dart';
 
 class AlbumCard extends StatelessWidget {
   const AlbumCard({
     super.key,
+    required this.album,
     required this.imageSize,
   });
 
   final double imageSize;
+  final AlbumItemModel album;
 
   @override
   Widget build(BuildContext context) {
-    return Column(children: [
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       ClipRRect(
         borderRadius: BorderRadius.circular(12),
         child: Image.network(
-          "https://p1.music.126.net/ATce5mCIf_GqCLBqJcmzTg==/109951165166142900.jpg",
+          album.picUrl,
           fit: BoxFit.cover,
           width: imageSize,
           height: imageSize,
@@ -24,9 +27,9 @@ class AlbumCard extends StatelessWidget {
         height: 8,
       ),
       Text(
-        "二十岁后的人生像是按了加快键",
-        style: Theme.of(context).textTheme.bodyLarge!.copyWith(fontSize: 16),
-        maxLines: 1,
+        album.name,
+        style: Theme.of(context).textTheme.bodyLarge!.copyWith(fontSize: 15),
+        maxLines: 2,
         overflow: TextOverflow.ellipsis,
       )
     ]);

@@ -1,7 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tang_music/consts.dart';
+import 'package:tang_music/storage.dart';
 
-class Settings extends StatelessWidget {
+class Settings extends StatefulWidget {
   const Settings({Key? key}) : super(key: key);
+
+  @override
+  State<Settings> createState() => _SettingsState();
+}
+
+class _SettingsState extends State<Settings> {
+  final baseUrlController = TextEditingController();
+
+  _SettingsState() {
+    _initSetting();
+  }
+
+  _initSetting() async {
+    String? configBaseUrl = Storage.local.getString(ConfigKeys.apiBaseUrlKey);
+    baseUrlController.text = configBaseUrl ?? '';
+  }
+
+  @override
+  void dispose() {
+    baseUrlController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -14,32 +40,35 @@ class Settings extends StatelessWidget {
               Text(
                 "服务器地址",
                 style: TextStyle(
-                    fontSize: 16, fontWeight: FontWeight.w600, color: Theme.of(context).textTheme.bodyLarge!.color),
+                    fontSize: 14, fontWeight: FontWeight.w600, color: Theme.of(context).textTheme.bodyLarge!.color),
               ),
               const SizedBox(
-                width: 16,
+                width: 12,
               ),
-              Container(
-                width: 320,
-                height: 48,
-                padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
-                decoration: BoxDecoration(
-                    color: Theme.of(context).textTheme.bodyLarge!.color!.withOpacity(0.05),
-                    borderRadius: BorderRadius.circular(8)),
-                child: const TextField(
-                  decoration: InputDecoration(hintText: "请输入服务器地址", border: InputBorder.none),
+              Expanded(
+                child: Container(
+                  height: 48,
+                  padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
+                  decoration: BoxDecoration(
+                      color: Theme.of(context).textTheme.bodyLarge!.color!.withOpacity(0.05),
+                      borderRadius: BorderRadius.circular(8)),
+                  child: TextField(
+                    controller: baseUrlController,
+                    decoration: const InputDecoration(hintText: "请输入服务器地址", border: InputBorder.none),
+                  ),
                 ),
               ),
               const SizedBox(
-                width: 16,
+                width: 12,
               ),
               SizedBox(
-                width: 100,
+                width: 60,
                 height: 48,
-                child: FloatingActionButton(
-                  mini: true,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                  onPressed: () {},
+                child: ElevatedButton(
+                  onPressed: () {
+                    Storage.local.setString(ConfigKeys.apiBaseUrlKey, baseUrlController.text);
+                    Get.snackbar("保存成功", '当前设置立即生效');
+                  },
                   child: const Text('确定'),
                 ),
               )

@@ -8,21 +8,26 @@ class PlayerScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const SafeArea(
-      child: Column(
-        children: [
-          Spacer(
-            flex: 2,
-          ),
-          SongInfo(),
-          Spacer(
-            flex: 3,
-          ),
-          PlayerController(),
-          Spacer(
-            flex: 1,
-          )
-        ],
+    Size size = MediaQuery.of(context).size;
+
+    return SingleChildScrollView(
+      child: SizedBox(
+        height: size.height,
+        child: Column(
+          children: const [
+            Spacer(
+              flex: 2,
+            ),
+            SongInfo(),
+            Spacer(
+              flex: 3,
+            ),
+            PlayerController(),
+            Spacer(
+              flex: 1,
+            )
+          ],
+        ),
       ),
     );
   }

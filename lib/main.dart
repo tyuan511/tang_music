@@ -1,20 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:get/get.dart';
 import 'package:tang_music/layouts/mobile_layout.dart';
 import 'package:tang_music/layouts/tablet_layout.dart';
-import 'package:tang_music/store/player_store.dart';
 import 'package:flutter/services.dart';
 import 'dart:io';
 
 import 'package:tang_music/theme.dart';
 
-void main() {
-  runApp(
-    ChangeNotifierProvider(
-      create: (context) => PlayerStore(),
-      child: const MyApp(),
-    ),
-  );
+import 'storage.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Storage.init();
+  runApp(const MyApp());
 
   if (Platform.isAndroid) {
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(statusBarColor: Colors.transparent));
@@ -26,19 +24,17 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
-    bool isMobile = size.width < size.height;
+    return GetMaterialApp(
+        debugShowCheckedModeBanner: false,
+        theme: lightThemeData(context),
+        home: LayoutBuilder(
+          builder: (BuildContext context, BoxConstraints constraints) {
+            if (constraints.maxWidth > constraints.maxHeight) {
+              return TabletLayout();
+            }
 
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: lightThemeData(context),
-      home: isMobile
-          ? MobileLayout(
-              child: Container(),
-            )
-          : TabletLayout(
-              child: Container(),
-            ),
-    );
+            return MobileLayout();
+          },
+        ));
   }
 }
