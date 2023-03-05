@@ -34,29 +34,25 @@ class _HomeScreenState extends State<HomeScreen> {
               length: tabs.length,
               child: Scaffold(
                 appBar: AppBar(
-                  systemOverlayStyle: SystemUiOverlayStyle.dark,
-                  title: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 32,
-                    ),
-                    child: TabBar(
-                      labelColor: Colors.black,
-                      labelStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-                      unselectedLabelColor: Colors.black54,
-                      indicatorSize: TabBarIndicatorSize.label,
-                      indicatorWeight: 3,
-                      indicatorColor: Theme.of(context).primaryColor,
-                      tabs: tabs
-                          .map((tab) => Tab(
-                                text: tab,
-                              ))
-                          .toList(),
-                    ),
+                  automaticallyImplyLeading: false,
+                  titleSpacing: 64,
+                  title: TabBar(
+                    labelColor: Colors.black,
+                    labelStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                    unselectedLabelColor: Colors.black54,
+                    indicatorSize: TabBarIndicatorSize.label,
+                    indicatorWeight: 3,
+                    indicatorColor: Theme.of(context).primaryColor,
+                    tabs: tabs
+                        .map((tab) => Tab(
+                              text: tab,
+                            ))
+                        .toList(),
                   ),
                   elevation: 0,
                   backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                 ),
-                body: SafeArea(child: TabBarView(children: [MyList(), RecommandList(), Settings()])),
+                body: const SafeArea(child: TabBarView(children: [MyList(), RecommandList(), Settings()])),
               ),
             )
           : LoginQRcode(),

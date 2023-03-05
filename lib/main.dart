@@ -30,10 +30,10 @@ class MyApp extends StatelessWidget {
         home: LayoutBuilder(
           builder: (BuildContext context, BoxConstraints constraints) {
             if (constraints.maxWidth > constraints.maxHeight) {
-              return TabletLayout();
+              return const TabletLayout();
             }
 
-            return MobileLayout();
+            return const MobileLayout();
           },
         ));
   }

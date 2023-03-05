@@ -12,7 +12,7 @@ class LoginQRcode extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return api.qrcodeUrl.value != ''
+    return Obx(() => api.qrcodeUrl.value != ''
         ? Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -24,10 +24,6 @@ class LoginQRcode extends StatelessWidget {
                 const SizedBox(
                   height: 8,
                 ),
-                Text(
-                  api.qrcodeUrl.value,
-                  style: TextStyle(fontSize: 18),
-                ),
                 const Text(
                   "请扫码登录",
                   style: TextStyle(fontSize: 18),
@@ -35,6 +31,6 @@ class LoginQRcode extends StatelessWidget {
               ],
             ),
           )
-        : Container();
+        : Container());
   }
 }
