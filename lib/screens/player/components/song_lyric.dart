@@ -71,7 +71,7 @@ class _SongLyricState extends State<SongLyric> {
                               fontSize: 18,
                               color: index == lyricIdx
                                   ? Theme.of(context).primaryColor
-                                  : Theme.of(context).textTheme.bodyMedium!.color),
+                                  : Theme.of(context).textTheme.bodyMedium!.color!.withOpacity(0.5)),
                           textAlign: TextAlign.center,
                         ))
                 : Container(),

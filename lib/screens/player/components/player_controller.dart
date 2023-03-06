@@ -24,11 +24,11 @@ class PlayerController extends StatelessWidget {
           const Spacer(),
           buildSideButton(context, Icons.arrow_back_ios_rounded, -1),
           const SizedBox(
-            width: 24,
+            width: 20,
           ),
           buildPlayerButton(context),
           const SizedBox(
-            width: 24,
+            width: 20,
           ),
           buildSideButton(context, Icons.arrow_forward_ios_rounded, 1),
           const Spacer(),

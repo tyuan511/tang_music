@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:tang_music/api/api_controller.dart';
 import 'package:tang_music/screens/home/components/login_qrcode.dart';
@@ -55,7 +54,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 body: const SafeArea(child: TabBarView(children: [MyList(), RecommandList(), Settings()])),
               ),
             )
-          : LoginQRcode(),
+          : Scaffold(body: LoginQRcode()),
     );
   }
 }

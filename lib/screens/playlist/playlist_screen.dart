@@ -18,33 +18,35 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Obx(() {
-      if (api.currAlbum.value == null) {
-        return const Center(
-          child: Text(
-            '暂无正在播放的歌单',
-            style: TextStyle(fontSize: 18),
-          ),
-        );
-      }
+    return Scaffold(
+      body: Obx(() {
+        if (api.currAlbum.value == null) {
+          return const Center(
+            child: Text(
+              '暂无正在播放的歌单',
+              style: TextStyle(fontSize: 18),
+            ),
+          );
+        }
 
-      return Column(
-        children: [
-          PlaylistTitle(api: api),
-          Expanded(
-              child: ListView.builder(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  itemCount: api.currSongs.length,
-                  itemBuilder: (context, index) => PlayItem(
-                      song: api.currSongs[index],
-                      index: index,
-                      isActive: api.currSong.value == api.currSongs[index],
-                      onTap: () {
-                        api.setCurrSong(api.currSongs[index]);
-                        GlobalKeys.tabletLayoutScaffoldKey.currentState!.closeDrawer();
-                      })))
-        ],
-      );
-    });
+        return Column(
+          children: [
+            PlaylistTitle(api: api),
+            Expanded(
+                child: ListView.builder(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    itemCount: api.currSongs.length,
+                    itemBuilder: (context, index) => PlayItem(
+                        song: api.currSongs[index],
+                        index: index,
+                        isActive: api.currSong.value == api.currSongs[index],
+                        onTap: () {
+                          api.setCurrSong(api.currSongs[index]);
+                          GlobalKeys.tabletLayoutScaffoldKey.currentState?.closeDrawer();
+                        })))
+          ],
+        );
+      }),
+    );
   }
 }

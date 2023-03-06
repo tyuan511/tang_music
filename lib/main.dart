@@ -27,14 +27,9 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
         debugShowCheckedModeBanner: false,
         theme: lightThemeData(context),
-        home: LayoutBuilder(
-          builder: (BuildContext context, BoxConstraints constraints) {
-            if (constraints.maxWidth > constraints.maxHeight) {
-              return const TabletLayout();
-            }
-
-            return const MobileLayout();
-          },
+        home: OrientationBuilder(
+          builder: (context, orientation) =>
+              orientation == Orientation.landscape ? const TabletLayout() : const MobileLayout(),
         ));
   }
 }
