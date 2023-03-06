@@ -20,7 +20,7 @@ class PlayerController extends StatelessWidget {
               onPressed: () {
                 GlobalKeys.tabletLayoutScaffoldKey.currentState!.openDrawer();
               },
-              icon: const Icon(Icons.menu_rounded)),
+              icon: const Icon(Icons.menu_open_rounded)),
           const Spacer(),
           buildSideButton(context, Icons.arrow_back_ios_rounded, -1),
           const SizedBox(
@@ -56,7 +56,7 @@ class PlayerController extends StatelessWidget {
         borderRadius: BorderRadius.circular(36),
         child: Icon(
           api.playState.value == PlayerState.playing ? Icons.pause_rounded : Icons.play_arrow_rounded,
-          color: Theme.of(context).textTheme.bodyLarge?.color,
+          color: Theme.of(context).primaryColor,
           size: 32,
         ),
       ),

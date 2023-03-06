@@ -12,10 +12,13 @@ class MyList extends StatefulWidget {
   State<MyList> createState() => _MyListState();
 }
 
-class _MyListState extends State<MyList> {
+class _MyListState extends State<MyList> with AutomaticKeepAliveClientMixin {
   final ApiController api = Get.put(ApiController());
 
   List<AlbumItemModel> myList = [];
+
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   initState() {
@@ -33,6 +36,8 @@ class _MyListState extends State<MyList> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
+
     Size size = MediaQuery.of(context).size;
     double homeScreenWidth = size.width < size.height ? size.width : size.width - min(size.width, 500);
     double imageSize = (homeScreenWidth - 80) / 3;

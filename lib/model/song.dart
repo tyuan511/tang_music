@@ -1,10 +1,20 @@
+import 'package:get/get.dart';
+
+class SongLyricModel {
+  final Duration duration;
+  final String content;
+
+  SongLyricModel({required this.duration, required this.content});
+}
+
 class SongModel {
   final int id;
   final String name;
   final String picUrl;
   final String author;
   final Duration duration;
-  String? trackURL = '';
+  var trackURL = '';
+  var lyric = RxList<SongLyricModel>.empty(growable: true).obs;
 
   SongModel(
       {required this.id,

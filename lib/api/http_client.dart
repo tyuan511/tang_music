@@ -31,4 +31,4 @@ class _DefaultInterceptor extends Interceptor {
   }
 }
 
-final httpClient = const _DioFactory('https://netease.yt7.one').create();
+final httpClient = const _DioFactory(apiBaseUrl).create();

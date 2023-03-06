@@ -1,11 +1,13 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:tang_music/consts.dart';
 import 'package:tang_music/model/album_item.dart';
 import 'package:tang_music/model/song.dart';
 import 'package:tang_music/storage.dart';
+import 'package:tang_music/utils.dart';
 import 'http_client.dart';
 
 class ApiController extends GetxController {
@@ -24,6 +26,8 @@ class ApiController extends GetxController {
 
   int get currSongIndex => currSong.value == null ? -1 : currSongs.indexOf(currSong.value!);
 
+  List<SongLyricModel> get currLyric => currSong.value?.lyric.value ?? [];
+
   @override
   void onInit() {
     ever(currAlbum, (value) => getCurrAlbumSongs());
@@ -33,9 +37,15 @@ class ApiController extends GetxController {
       if (song.trackURL == '') {
         await getSongUrl(song);
       }
-      await player.stop();
-      await player.seek(Duration.zero);
-      await player.play(UrlSource(song.trackURL!));
+      if (song.lyric.value.isEmpty) {
+        await getSongLyric(song);
+      }
+
+      if (song.trackURL != '') {
+        await player.stop();
+        await player.seek(Duration.zero);
+        await player.play(UrlSource(song.trackURL));
+      }
     });
 
     player.onDurationChanged.listen((Duration d) => maxDuration.value = d);
@@ -76,8 +86,30 @@ class ApiController extends GetxController {
   }
 
   Future getSongUrl(SongModel song) async {
-    var res = await httpClient.get("/song/url/v1?id=${song.id}&level=exhigh");
-    song.trackURL = res.data['data'][0]['url'];
+    var res = await httpClient.get("/song/url/v1?id=${song.id}&level=standard");
+    var url = res.data['data'][0]['url'];
+    if (url == null) {
+      Fluttertoast.showToast(msg: "获取歌曲链接失败，自动播放下一曲");
+      playRelative(1);
+    } else {
+      song.trackURL = res.data['data'][0]['url'];
+    }
+  }
+
+  Future getSongLyric(SongModel song) async {
+    var res = await httpClient.get("/lyric?id=${song.id}");
+    String lyricString = res.data['lrc']['lyric'];
+    List<String> lyricLines = lyricString.split("\n");
+    for (var i = 0; i < lyricLines.length; i++) {
+      String lyricLine = lyricLines[i];
+      RegExp lyricRegExp = RegExp(r'^\[(.*)\](.*)$');
+      var match = lyricRegExp.firstMatch(lyricLine);
+      var lyric = match?.group(2)?.trim() ?? '';
+      if (lyric.isNotEmpty) {
+        song.lyric.value.add(SongLyricModel(
+            duration: parseDurationStr(match?.group(1)?.trim() ?? ''), content: match?.group(2)?.trim() ?? ''));
+      }
+    }
   }
 
   Future<List<AlbumItemModel>> getRecommandList({bool isLogin = false}) async {

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:tang_music/consts.dart';
 import 'package:tang_music/storage.dart';
 
@@ -10,12 +10,15 @@ class Settings extends StatefulWidget {
   State<Settings> createState() => _SettingsState();
 }
 
-class _SettingsState extends State<Settings> {
+class _SettingsState extends State<Settings> with AutomaticKeepAliveClientMixin {
   final baseUrlController = TextEditingController();
 
   _SettingsState() {
     _initSetting();
   }
+
+  @override
+  bool get wantKeepAlive => true;
 
   _initSetting() async {
     String? configBaseUrl = Storage.local.getString(ConfigKeys.apiBaseUrlKey);
@@ -30,6 +33,8 @@ class _SettingsState extends State<Settings> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
+
     return Padding(
       padding: const EdgeInsets.all(24),
       child: Column(
@@ -66,7 +71,9 @@ class _SettingsState extends State<Settings> {
                 child: ElevatedButton(
                   onPressed: () {
                     Storage.local.setString(ConfigKeys.apiBaseUrlKey, baseUrlController.text);
-                    Get.snackbar("保存成功", '当前设置立即生效');
+                    Fluttertoast.showToast(
+                      msg: "保存成功，立即生效",
+                    );
                   },
                   child: const Text('确定'),
                 ),
