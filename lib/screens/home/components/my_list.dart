@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:tang_music/api/api_controller.dart';
 import 'package:tang_music/model/album_item.dart';
 import 'package:tang_music/screens/home/components/album_card.dart';
+import 'package:tang_music/services/api_service.dart';
 
 class MyList extends StatefulWidget {
   const MyList({Key? key}) : super(key: key);
@@ -13,7 +14,8 @@ class MyList extends StatefulWidget {
 }
 
 class _MyListState extends State<MyList> with AutomaticKeepAliveClientMixin {
-  final ApiController api = Get.put(ApiController());
+  final ApiService _apiService = Get.find<ApiService>();
+  final ApiController _apiController = Get.put(ApiController());
 
   List<AlbumItemModel> myList = [];
 
@@ -28,7 +30,7 @@ class _MyListState extends State<MyList> with AutomaticKeepAliveClientMixin {
   }
 
   getData() async {
-    List<AlbumItemModel> data = await api.getUserAlbumList();
+    List<AlbumItemModel> data = await _apiService.getUserAlbumList(_apiController.userId.value);
     setState(() {
       myList = data;
     });
@@ -49,8 +51,7 @@ class _MyListState extends State<MyList> with AutomaticKeepAliveClientMixin {
         children: [
           Text(
             "我的歌单",
-            style: TextStyle(
-                fontSize: 16, fontWeight: FontWeight.w600, color: Theme.of(context).textTheme.bodyLarge!.color),
+            style: Theme.of(context).textTheme.titleMedium,
           ),
           Expanded(
               child: GridView.builder(

@@ -36,9 +36,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   automaticallyImplyLeading: false,
                   titleSpacing: 64,
                   title: TabBar(
-                    labelColor: Colors.black,
-                    labelStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-                    unselectedLabelColor: Colors.black54,
+                    labelColor: Theme.of(context).textTheme.titleMedium!.color,
+                    labelStyle: Theme.of(context).textTheme.titleMedium,
+                    unselectedLabelColor: Theme.of(context).textTheme.titleMedium!.color!.withOpacity(0.5),
                     indicatorSize: TabBarIndicatorSize.label,
                     indicatorWeight: 3,
                     indicatorColor: Theme.of(context).primaryColor,

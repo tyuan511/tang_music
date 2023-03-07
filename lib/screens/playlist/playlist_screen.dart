@@ -21,10 +21,10 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
     return Scaffold(
       body: Obx(() {
         if (api.currAlbum.value == null) {
-          return const Center(
+          return Center(
             child: Text(
               '暂无正在播放的歌单',
-              style: TextStyle(fontSize: 18),
+              style: Theme.of(context).textTheme.bodyMedium,
             ),
           );
         }

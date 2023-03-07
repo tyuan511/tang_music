@@ -14,7 +14,7 @@ class SongModel {
   final String author;
   final Duration duration;
   var trackURL = '';
-  var lyric = RxList<SongLyricModel>.empty(growable: true).obs;
+  var lyric = RxList<SongLyricModel>.empty(growable: true);
 
   SongModel(
       {required this.id,

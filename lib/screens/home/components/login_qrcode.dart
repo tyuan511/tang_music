@@ -18,16 +18,19 @@ class LoginQRcode extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  QrImage(
-                    data: api.qrcodeUrl.value,
-                    size: constraints.maxWidth * 0.6,
+                  ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 320),
+                    child: QrImage(
+                      data: api.qrcodeUrl.value,
+                      size: constraints.maxWidth * 0.6,
+                    ),
                   ),
                   const SizedBox(
                     height: 8,
                   ),
-                  const Text(
+                  Text(
                     "请扫码登录",
-                    style: TextStyle(fontSize: 18),
+                    style: Theme.of(context).textTheme.titleMedium,
                   )
                 ],
               ),

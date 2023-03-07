@@ -5,6 +5,7 @@ import 'package:tang_music/model/album_item.dart';
 import 'dart:math' as math;
 
 import 'package:tang_music/screens/home/components/album_card.dart';
+import 'package:tang_music/services/api_service.dart';
 
 class RecommandList extends StatefulWidget {
   const RecommandList({Key? key}) : super(key: key);
@@ -14,7 +15,8 @@ class RecommandList extends StatefulWidget {
 }
 
 class _RecommandListState extends State<RecommandList> with AutomaticKeepAliveClientMixin {
-  ApiController api = Get.put(ApiController());
+  final ApiController _apiController = Get.put(ApiController());
+  final ApiService _apiService = Get.find<ApiService>();
 
   List<AlbumItemModel> recommandList = [];
 
@@ -29,7 +31,7 @@ class _RecommandListState extends State<RecommandList> with AutomaticKeepAliveCl
   }
 
   getData() async {
-    List<AlbumItemModel> data = await api.getRecommandList();
+    List<AlbumItemModel> data = await _apiService.getRecommandList(_apiController.userId.value);
     setState(() {
       recommandList = data;
     });

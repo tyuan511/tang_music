@@ -20,7 +20,9 @@ class PlayItem extends StatelessWidget {
       child: Container(
         height: 64,
         padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 2),
-        color: index % 2 == 0 ? Colors.white : Colors.white10,
+        color: index % 2 == 0
+            ? Theme.of(context).scaffoldBackgroundColor.withOpacity(0.1)
+            : Theme.of(context).scaffoldBackgroundColor,
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 32),
           decoration:
@@ -28,31 +30,24 @@ class PlayItem extends StatelessWidget {
           child: Row(
             children: [
               Text('${index + 1}',
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: color,
-                  )),
+                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                        color: color,
+                      )),
               const SizedBox(
                 width: 16,
               ),
-              Text(
-                song.name,
-                style: TextStyle(
-                  fontSize: 16,
-                  color: color,
+              Expanded(
+                child: Text(
+                  song.name,
+                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                        color: color,
+                      ),
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
               const SizedBox(
-                width: 16,
+                width: 24,
               ),
-              Text(
-                song.author,
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyMedium!
-                    .copyWith(color: Theme.of(context).textTheme.bodyMedium!.color!.withOpacity(0.5)),
-              ),
-              const Spacer(),
               Text(
                 formatDuration(song.duration),
               )

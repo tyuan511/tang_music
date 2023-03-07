@@ -28,8 +28,13 @@ class _SongLyricState extends State<SongLyric> {
       while (widget.api.currLyric[idx].duration.compareTo(value) < 0) {
         idx += 1;
       }
+
+      if (idx > 0 && idx < widget.api.currLyric.length - 1) {
+        idx -= 1;
+      }
+
       setState(() {
-        lyricIdx = max(idx - 1, 0);
+        lyricIdx = idx;
       });
 
       _scrollToIndex(lyricIdx);
@@ -54,7 +59,7 @@ class _SongLyricState extends State<SongLyric> {
   Widget build(BuildContext context) {
     return Obx(
       () {
-        bool hasLyric = widget.api.currSong.value != null && widget.api.currSong.value!.lyric.value.isNotEmpty;
+        bool hasLyric = widget.api.currSong.value != null && widget.api.currSong.value!.lyric.isNotEmpty;
 
         return LayoutBuilder(
           builder: (context, constraints) => SizedBox(
@@ -64,14 +69,14 @@ class _SongLyricState extends State<SongLyric> {
                 ? ListView.builder(
                     controller: _controller,
                     itemExtent: _itemHeight,
-                    itemCount: widget.api.currSong.value?.lyric.value.length ?? 0,
+                    itemCount: widget.api.currSong.value?.lyric.length ?? 0,
                     itemBuilder: (context, index) => Text(
                           widget.api.currLyric[index].content,
-                          style: TextStyle(
+                          style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                               fontSize: 18,
                               color: index == lyricIdx
                                   ? Theme.of(context).primaryColor
-                                  : Theme.of(context).textTheme.bodyMedium!.color!.withOpacity(0.5)),
+                                  : Theme.of(context).textTheme.bodyLarge!.color!.withOpacity(0.5)),
                           textAlign: TextAlign.center,
                         ))
                 : Container(),

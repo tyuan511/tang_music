@@ -34,7 +34,7 @@ class PlaylistTitle extends StatelessWidget {
               child: Center(
                 child: Text(
                   api.currAlbum.value!.name,
-                  style: const TextStyle(color: Colors.white, fontSize: 28, fontWeight: FontWeight.w600),
+                  style: Theme.of(context).textTheme.titleMedium,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),

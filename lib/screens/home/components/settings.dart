@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart';
+import 'package:tang_music/api/api_controller.dart';
 import 'package:tang_music/consts.dart';
-import 'package:tang_music/storage.dart';
+import 'package:tang_music/services/config_service.dart';
 
 class Settings extends StatefulWidget {
   const Settings({Key? key}) : super(key: key);
@@ -12,6 +14,8 @@ class Settings extends StatefulWidget {
 
 class _SettingsState extends State<Settings> with AutomaticKeepAliveClientMixin {
   final baseUrlController = TextEditingController();
+  final _configService = Get.find<ConfigService>();
+  final _apiController = Get.put(ApiController());
 
   _SettingsState() {
     _initSetting();
@@ -21,7 +25,7 @@ class _SettingsState extends State<Settings> with AutomaticKeepAliveClientMixin 
   bool get wantKeepAlive => true;
 
   _initSetting() async {
-    String? configBaseUrl = Storage.local.getString(ConfigKeys.apiBaseUrlKey);
+    String? configBaseUrl = _configService.pref.getString(ConfigKeys.apiBaseUrlKey);
     baseUrlController.text = configBaseUrl ?? '';
   }
 
@@ -42,9 +46,8 @@ class _SettingsState extends State<Settings> with AutomaticKeepAliveClientMixin 
           Row(
             children: [
               Text(
-                "服务器地址",
-                style: TextStyle(
-                    fontSize: 14, fontWeight: FontWeight.w600, color: Theme.of(context).textTheme.bodyLarge!.color),
+                "服务地址",
+                style: Theme.of(context).textTheme.bodyMedium,
               ),
               const SizedBox(
                 width: 12,
@@ -58,7 +61,11 @@ class _SettingsState extends State<Settings> with AutomaticKeepAliveClientMixin 
                       borderRadius: BorderRadius.circular(8)),
                   child: TextField(
                     controller: baseUrlController,
-                    decoration: const InputDecoration(hintText: "请输入服务器地址", border: InputBorder.none),
+                    decoration: InputDecoration(
+                      hintText: "请输入服务器地址",
+                      hintStyle: Theme.of(context).textTheme.bodyMedium,
+                      border: InputBorder.none,
+                    ),
                   ),
                 ),
               ),
@@ -70,12 +77,34 @@ class _SettingsState extends State<Settings> with AutomaticKeepAliveClientMixin 
                 height: 48,
                 child: ElevatedButton(
                   onPressed: () {
-                    Storage.local.setString(ConfigKeys.apiBaseUrlKey, baseUrlController.text);
+                    _configService.pref.setString(ConfigKeys.apiBaseUrlKey, baseUrlController.text);
                     Fluttertoast.showToast(
                       msg: "保存成功，立即生效",
                     );
                   },
+                  style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Theme.of(context).primaryColor)),
                   child: const Text('确定'),
+                ),
+              )
+            ],
+          ),
+          const SizedBox(
+            height: 12,
+          ),
+          Row(
+            children: [
+              Text(
+                "暗黑模式",
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+              Obx(
+                () => Switch(
+                  activeColor: Colors.pinkAccent,
+                  value: _apiController.isDarkTheme.value,
+                  onChanged: (value) {
+                    _apiController.isDarkTheme.value = value;
+                    _configService.pref.setBool(ConfigKeys.isDarkThemeKey, value);
+                  },
                 ),
               )
             ],

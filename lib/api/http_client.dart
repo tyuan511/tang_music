@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
+import 'package:get/get.dart';
 import 'package:tang_music/consts.dart';
-import 'package:tang_music/storage.dart';
+import 'package:tang_music/services/config_service.dart';
 
 class _DioFactory {
   const _DioFactory(this._baseUrl);
@@ -17,14 +18,16 @@ class _DioFactory {
 }
 
 class _DefaultInterceptor extends Interceptor {
+  final _configService = Get.find<ConfigService>();
+
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) async {
-    String? configBaseUrl = Storage.local.getString(ConfigKeys.apiBaseUrlKey);
+    String? configBaseUrl = _configService.pref.getString(ConfigKeys.apiBaseUrlKey);
     if (configBaseUrl != null) {
       options.baseUrl = configBaseUrl;
     }
 
-    String? cookie = Storage.local.getString(ConfigKeys.cookieKey) ?? '';
+    String? cookie = _configService.pref.getString(ConfigKeys.cookieKey) ?? '';
     options.headers["cookie"] = cookie;
     options.queryParameters['cookie'] = cookie;
     handler.next(options);

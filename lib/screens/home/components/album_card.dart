@@ -36,7 +36,7 @@ class AlbumCard extends StatelessWidget {
         ),
         Text(
           album.name,
-          style: Theme.of(context).textTheme.bodyLarge!.copyWith(fontSize: 15),
+          style: Theme.of(context).textTheme.titleMedium!.copyWith(fontSize: 15),
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
         )

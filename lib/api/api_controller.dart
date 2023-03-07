@@ -6,38 +6,41 @@ import 'package:get/get.dart';
 import 'package:tang_music/consts.dart';
 import 'package:tang_music/model/album_item.dart';
 import 'package:tang_music/model/song.dart';
-import 'package:tang_music/storage.dart';
-import 'package:tang_music/utils.dart';
-import 'http_client.dart';
+import 'package:tang_music/services/api_service.dart';
+import 'package:tang_music/services/config_service.dart';
 
 class ApiController extends GetxController {
-  String currAuthKey = '';
-  var qrcodeUrl = ''.obs;
-  var userId = 0.obs;
-  var currAlbum = Rx<AlbumItemModel?>(null);
-  var currSongs = List<SongModel>.empty().obs;
-  var currSong = Rx<SongModel?>(null);
+  final qrcodeUrl = ''.obs;
+  final userId = 0.obs;
+  final currAlbum = Rx<AlbumItemModel?>(null);
+  final currSongs = List<SongModel>.empty().obs;
+  final currSong = Rx<SongModel?>(null);
   final player = AudioPlayer(playerId: 'tang_music_player');
-  var playState = PlayerState.stopped.obs;
-  var currDuration = Duration.zero.obs;
-  var maxDuration = Duration.zero.obs;
+  final playState = PlayerState.stopped.obs;
+  final currDuration = Duration.zero.obs;
+  final maxDuration = Duration.zero.obs;
 
   bool get logined => userId.value != 0;
-
   int get currSongIndex => currSong.value == null ? -1 : currSongs.indexOf(currSong.value!);
+  List<SongLyricModel> get currLyric => currSong.value?.lyric ?? [];
 
-  List<SongLyricModel> get currLyric => currSong.value?.lyric.value ?? [];
+  final _configService = Get.find<ConfigService>();
+  final _apiService = Get.find<ApiService>();
+
+  final isDarkTheme = false.obs;
 
   @override
   void onInit() {
+    isDarkTheme.value = _configService.pref.getBool(ConfigKeys.isDarkThemeKey) ?? false;
+
     ever(currAlbum, (value) => getCurrAlbumSongs());
-    ever(currSongs, (_) => currSong.value = currSongs.first);
+    ever(currSongs, (songs) => currSong.value = songs.first);
     ever(currSong, (song) async {
       if (song == null) return;
       if (song.trackURL == '') {
         await getSongUrl(song);
       }
-      if (song.lyric.value.isEmpty) {
+      if (song.lyric.isEmpty) {
         await getSongLyric(song);
       }
 
@@ -85,90 +88,56 @@ class ApiController extends GetxController {
     }
   }
 
-  Future getSongUrl(SongModel song) async {
-    var res = await httpClient.get("/song/url/v1?id=${song.id}&level=standard");
-    var url = res.data['data'][0]['url'];
-    if (url == null) {
+  getSongUrl(SongModel song) async {
+    var url = await _apiService.getSongUrl(song.id);
+    if (url == '') {
       Fluttertoast.showToast(msg: "获取歌曲链接失败，自动播放下一曲");
       playRelative(1);
     } else {
-      song.trackURL = res.data['data'][0]['url'];
+      song.trackURL = url;
     }
   }
 
-  Future getSongLyric(SongModel song) async {
-    var res = await httpClient.get("/lyric?id=${song.id}");
-    String lyricString = res.data['lrc']['lyric'];
-    List<String> lyricLines = lyricString.split("\n");
-    for (var i = 0; i < lyricLines.length; i++) {
-      String lyricLine = lyricLines[i];
-      RegExp lyricRegExp = RegExp(r'^\[(.*)\](.*)$');
-      var match = lyricRegExp.firstMatch(lyricLine);
-      var lyric = match?.group(2)?.trim() ?? '';
-      if (lyric.isNotEmpty) {
-        song.lyric.value.add(SongLyricModel(
-            duration: parseDurationStr(match?.group(1)?.trim() ?? ''), content: match?.group(2)?.trim() ?? ''));
-      }
-    }
-  }
-
-  Future<List<AlbumItemModel>> getRecommandList({bool isLogin = false}) async {
-    var res = await httpClient.get("/recommend/resource");
-
-    List result = res.data["recommend"];
-    return result.map((e) => AlbumItemModel(id: e['id'], name: e['name'], picUrl: e['picUrl'])).toList();
-  }
-
-  Future<List<AlbumItemModel>> getUserAlbumList() async {
-    if (userId.value == 0) {
-      return [];
-    }
-    var res = await httpClient.get("/user/playlist?uid=${userId.value}");
-    List result = res.data["playlist"];
-    return result.map((e) => AlbumItemModel(id: e['id'], name: e['name'], picUrl: e['coverImgUrl'])).toList();
+  getSongLyric(SongModel song) async {
+    var lyric = await _apiService.getSongLyric(song.id);
+    song.lyric.value = lyric;
   }
 
   Future getCurrAlbumSongs() async {
-    if (currAlbum.value == null) {
-      return [];
-    }
-
-    var res = await httpClient.get("/playlist/track/all?id=${currAlbum.value!.id}");
-
-    currSongs.value = (res.data['songs'] as List).map((e) => SongModel.fromJson(e)).toList();
+    final playlist = await _apiService.getSongs(currAlbum.value?.id ?? 0);
+    currSongs.value = playlist;
   }
 
   getUserInfo() async {
-    var res = await httpClient.get('/user/account?timerstamp=${DateTime.now()}');
-    if (res.data['account']['status'] != 0) {
+    int id = await _apiService.getUserInfo();
+
+    if (id < 0) {
       getQrcode();
-      return;
+    } else {
+      userId.value = id;
     }
-    userId.value = res.data['account']['id'];
   }
 
   getQrcode() async {
-    var res = await httpClient.get("/login/qr/key?timerstamp=${DateTime.now()}");
-    currAuthKey = res.data["data"]["unikey"];
-
-    var res2 = await httpClient.get("/login/qr/create?key=$currAuthKey&timerstamp=${DateTime.now()}");
-    qrcodeUrl.value = res2.data['data']['qrurl'];
-    _checkScan();
+    var res = await _apiService.getQrcode();
+    qrcodeUrl.value = res['url'];
+    String key = res['unikey'];
+    _checkScan(key);
   }
 
-  _checkScan() async {
+  _checkScan(String key) async {
     Timer(const Duration(seconds: 5), () async {
-      var res3 = await httpClient.get("/login/qr/check?key=$currAuthKey&timerstamp=${DateTime.now()}");
-      switch (res3.data['code']) {
+      var res = await _apiService.checkScan(key);
+      switch (res['code']) {
         case 800:
           getQrcode();
           return;
         case 801:
-          return _checkScan();
+          return _checkScan(key);
         case 802:
-          return _checkScan();
+          return _checkScan(key);
         case 803:
-          Storage.local.setString(ConfigKeys.cookieKey, res3.data['cookie']);
+          _configService.pref.setString(ConfigKeys.cookieKey, res['cookie']);
           getUserInfo();
           return;
       }
